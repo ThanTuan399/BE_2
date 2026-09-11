@@ -17,10 +17,11 @@ const bacSiSchema = new mongoose.Schema(
       maxlength: 100,
     },
     soDienThoai: {
-      type: String,
-      required: [true, 'Số điện thoại bác sĩ là bắt buộc'],
-      trim: true,
-      match: [/^0\d{9}$/, 'Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 0'],
+        type: String,
+        required: [true, 'Số điện thoại bác sĩ là bắt buộc'],
+        unique: true,
+        trim: true,
+        match: [/^0\d{9}$/, 'Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 0'],
     },
   },
   {

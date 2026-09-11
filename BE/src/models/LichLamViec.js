@@ -10,7 +10,12 @@ const lichLamViecSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
-    // Quy ước ISO: 1 = Thứ 2, ..., 7 = Chủ nhật.
+
+    // Quy ước ISO:
+    // 1 = Thứ 2
+    // 2 = Thứ 3
+    // ...
+    // 7 = Chủ nhật
     thuTrongTuan: {
       type: Number,
       required: true,
@@ -18,16 +23,19 @@ const lichLamViecSchema = new mongoose.Schema(
       max: 7,
       index: true,
     },
+
     gioBatDau: {
       type: String,
       required: true,
       match: [HH_MM_REGEX, 'Giờ bắt đầu phải có dạng HH:mm'],
     },
+
     gioKetThuc: {
       type: String,
       required: true,
       match: [HH_MM_REGEX, 'Giờ kết thúc phải có dạng HH:mm'],
     },
+
     dangHoatDong: {
       type: Boolean,
       default: true,
@@ -40,17 +48,27 @@ const lichLamViecSchema = new mongoose.Schema(
   }
 );
 
-lichLamViecSchema.pre('validate', function validateWorkingHours(next) {
-  if (this.gioBatDau && this.gioKetThuc && this.gioBatDau >= this.gioKetThuc) {
-    return next(new Error('gioBatDau phải nhỏ hơn gioKetThuc'));
+// Kiểm tra khoảng thời gian hợp lệ.
+lichLamViecSchema.pre('validate', function () {
+  if (
+    this.gioBatDau &&
+    this.gioKetThuc &&
+    this.gioBatDau >= this.gioKetThuc
+  ) {
+    throw new Error('gioBatDau phải nhỏ hơn gioKetThuc');
   }
-  next();
 });
 
-// Không cho một bác sĩ có hai ca làm việc trùng hoàn toàn cùng thứ.
-lichLamViecSchema.index(
-  { bacSiId: 1, thuTrongTuan: 1, gioBatDau: 1, gioKetThuc: 1 },
-  { unique: true }
-);
+// Index phục vụ tìm lịch làm việc của bác sĩ.
+lichLamViecSchema.index({
+  bacSiId: 1,
+  thuTrongTuan: 1,
+  dangHoatDong: 1,
+  gioBatDau: 1,
+  gioKetThuc: 1,
+});
 
-module.exports = mongoose.model('LichLamViec', lichLamViecSchema);
+module.exports = mongoose.model(
+  'LichLamViec',
+  lichLamViecSchema
+);
