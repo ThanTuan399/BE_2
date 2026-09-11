@@ -1,0 +1,24 @@
+{
+  "name": "phong-kham-be-v1",
+  "version": "1.0.0",
+  "description": "Backend nền tảng cho hệ thống phòng khám - Auth nội bộ + bệnh nhân công khai + lịch làm việc + lịch khám",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js",
+    "seed": "node src/scripts/seed.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "mongoose": "^8.18.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
