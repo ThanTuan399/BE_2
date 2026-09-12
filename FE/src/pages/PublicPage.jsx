@@ -18,9 +18,9 @@ function PublicPage() {
     hoTen: '',
     soDienThoai: '',
     bacSiId: '',
-    thoiGianBatDau: '',
-    thoiGianKetThuc: '',
-  });
+    ngayKham: '',
+    gioBatDau: '',
+});
 
   const [thongBaoDatLich, setThongBaoDatLich] =
     useState(null);
@@ -93,17 +93,15 @@ function PublicPage() {
       setThongBaoDatLich(null);
 
       const payload = {
-        ...form,
+        hoTen: form.hoTen,
+        soDienThoai: form.soDienThoai,
+        bacSiId: form.bacSiId,
 
         thoiGianBatDau: new Date(
-          form.thoiGianBatDau
-        ).toISOString(),
-
-        thoiGianKetThuc: new Date(
-          form.thoiGianKetThuc
+          `${form.ngayKham}T${form.gioBatDau}:00`
         ).toISOString(),
       };
-
+      
       const result = await datLich(payload);
 
       setThongBaoDatLich({
@@ -117,8 +115,8 @@ function PublicPage() {
 
       setForm((prev) => ({
         ...prev,
-        thoiGianBatDau: '',
-        thoiGianKetThuc: '',
+        ngayKham: '',
+        gioBatDau: '',
       }));
     } catch (error) {
       setThongBaoDatLich({
@@ -251,6 +249,7 @@ function PublicPage() {
             className="booking-form"
             onSubmit={handleDatLich}
           >
+            {/* THÔNG TIN BỆNH NHÂN */}
             <div className="form-grid">
               <label>
                 Họ và tên
@@ -277,6 +276,7 @@ function PublicPage() {
               </label>
             </div>
 
+            {/* CHỌN BÁC SĨ */}
             <label>
               Chọn bác sĩ
 
@@ -286,43 +286,38 @@ function PublicPage() {
                 onChange={handleChange}
                 required
               >
-                {danhSachBacSi.map(
-                  (bacSi) => (
-                    <option
-                      key={bacSi._id}
-                      value={bacSi._id}
-                    >
-                      {bacSi.hoTen}
-                    </option>
-                  )
-                )}
+                {danhSachBacSi.map((bacSi) => (
+                  <option
+                    key={bacSi._id}
+                    value={bacSi._id}
+                  >
+                    {bacSi.hoTen}
+                  </option>
+                ))}
               </select>
             </label>
 
+            {/* NGÀY + GIỜ */}
             <div className="form-grid">
               <label>
-                Thời gian bắt đầu
+                Ngày khám
 
                 <input
-                  type="datetime-local"
-                  name="thoiGianBatDau"
-                  value={
-                    form.thoiGianBatDau
-                  }
+                  type="date"
+                  name="ngayKham"
+                  value={form.ngayKham}
                   onChange={handleChange}
                   required
                 />
               </label>
 
               <label>
-                Thời gian kết thúc
+                Giờ khám
 
                 <input
-                  type="datetime-local"
-                  name="thoiGianKetThuc"
-                  value={
-                    form.thoiGianKetThuc
-                  }
+                  type="time"
+                  name="gioBatDau"
+                  value={form.gioBatDau}
                   onChange={handleChange}
                   required
                 />

@@ -75,7 +75,6 @@ async function datLich({
   soDienThoai,
   bacSiId,
   thoiGianBatDau,
-  thoiGianKetThuc,
 }) {
   // 1. Validate dữ liệu đầu vào
   if (
@@ -84,8 +83,7 @@ async function datLich({
     !hoTen.trim() ||
     !soDienThoai.trim() ||
     !bacSiId ||
-    !thoiGianBatDau ||
-    !thoiGianKetThuc
+    !thoiGianBatDau
   ) {
     throw taoLoi('Vui lòng nhập đầy đủ thông tin');
   }
@@ -101,24 +99,21 @@ async function datLich({
   }
 
   const batDau = new Date(thoiGianBatDau);
-  const ketThuc = new Date(thoiGianKetThuc);
 
-  if (
-    Number.isNaN(batDau.getTime()) ||
-    Number.isNaN(ketThuc.getTime())
-  ) {
+  if (Number.isNaN(batDau.getTime())) {
     throw taoLoi('Thời gian khám không hợp lệ');
-  }
-
-  if (batDau >= ketThuc) {
-    throw taoLoi(
-      'Thời gian bắt đầu phải nhỏ hơn thời gian kết thúc'
-    );
   }
 
   if (batDau <= new Date()) {
     throw taoLoi('Không thể đặt lịch trong quá khứ');
   }
+
+  // Mỗi ca khám cố định 30 phút
+  const THOI_LUONG_CA_KHAM = 30 * 60 * 1000;
+
+  const ketThuc = new Date(
+    batDau.getTime() + THOI_LUONG_CA_KHAM
+  );
 
   // 2. Kiểm tra bác sĩ
   const bacSi = await BacSi.findById(bacSiId);
