@@ -22,6 +22,33 @@ async function layLichKham(req, res, next) {
   }
 }
 
+async function hoanThanhKham(
+  req,
+  res,
+  next
+) {
+  try {
+    const bacSiId =
+      req.user.bacSiId;
+
+    const data =
+      await doctorService.hoanThanhKham(
+        bacSiId,
+        req.body
+      );
+
+    return res.status(200).json({
+      success: true,
+      message:
+        'Hoàn thành khám thành công',
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   layLichKham,
+  hoanThanhKham,
 };

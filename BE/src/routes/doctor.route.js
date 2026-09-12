@@ -21,4 +21,11 @@ router.get(
   doctorController.layLichKham
 );
 
+router.post(
+  '/hoan-thanh-kham',
+  authenticate,
+  authorize('BAC_SI'),
+  doctorController.hoanThanhKham
+);
+
 module.exports = router;

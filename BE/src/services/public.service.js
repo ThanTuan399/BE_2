@@ -4,6 +4,8 @@ const BacSi = require('../models/BacSi');
 const BenhNhan = require('../models/BenhNhan');
 const LichLamViec = require('../models/LichLamViec');
 const LichKham = require('../models/LichKham');
+const HoSoKham = require('../models/HoSoKham');
+const DonThuoc = require('../models/DonThuoc');
 
 const TIME_ZONE = 'Asia/Ho_Chi_Minh';
 
@@ -212,29 +214,121 @@ async function traCuuLich(soDienThoai) {
     typeof soDienThoai !== 'string' ||
     !/^0\d{9}$/.test(soDienThoai.trim())
   ) {
-    throw taoLoi('Số điện thoại không hợp lệ');
+    throw taoLoi(
+      'Số điện thoại không hợp lệ'
+    );
   }
 
+  // 1. Tìm bệnh nhân
   const benhNhan = await BenhNhan.findOne({
     soDienThoai: soDienThoai.trim(),
   }).lean();
 
   if (!benhNhan) {
-    throw taoLoi('Không tìm thấy bệnh nhân', 404);
+    throw taoLoi(
+      'Không tìm thấy bệnh nhân',
+      404
+    );
   }
 
+  // 2. Lấy toàn bộ lịch khám
   const lichKham = await LichKham.find({
     benhNhanId: benhNhan._id,
   })
-    .populate('bacSiId', 'hoTen soDienThoai')
+    .populate(
+      'bacSiId',
+      'hoTen soDienThoai'
+    )
     .sort({
       thoiGianBatDau: -1,
     })
     .lean();
 
+  // 3. Chỉ tìm hồ sơ cho những lịch
+  // đã hoàn thành
+  const lichHoanThanhIds = lichKham
+    .filter(
+      (lich) =>
+        lich.trangThai === 'HOAN_THANH'
+    )
+    .map((lich) => lich._id);
+
+  const hoSoKham =
+    await HoSoKham.find({
+      lichKhamId: {
+        $in: lichHoanThanhIds,
+      },
+    }).lean();
+
+  // 4. Lấy đơn thuốc
+  const hoSoIds = hoSoKham.map(
+    (hoSo) => hoSo._id
+  );
+
+  const donThuoc =
+    await DonThuoc.find({
+      hoSoKhamId: {
+        $in: hoSoIds,
+      },
+    }).lean();
+
+  // 5. Map hồ sơ theo lichKhamId
+  const hoSoMap = new Map();
+
+  for (const hoSo of hoSoKham) {
+    hoSoMap.set(
+      hoSo.lichKhamId.toString(),
+      hoSo
+    );
+  }
+
+  // 6. Map đơn thuốc theo hoSoKhamId
+  const donThuocMap = new Map();
+
+  for (const don of donThuoc) {
+    donThuocMap.set(
+      don.hoSoKhamId.toString(),
+      don
+    );
+  }
+
+  // 7. Ghép dữ liệu
+  const danhSachLich = lichKham.map(
+    (lich) => {
+      if (
+        lich.trangThai !==
+        'HOAN_THANH'
+      ) {
+        return {
+          ...lich,
+          hoSoKham: null,
+          donThuoc: null,
+        };
+      }
+
+      const hoSo =
+        hoSoMap.get(
+          lich._id.toString()
+        ) || null;
+
+      const don =
+        hoSo
+          ? donThuocMap.get(
+              hoSo._id.toString()
+            ) || null
+          : null;
+
+      return {
+        ...lich,
+        hoSoKham: hoSo,
+        donThuoc: don,
+      };
+    }
+  );
+
   return {
     benhNhan,
-    lichKham,
+    lichKham: danhSachLich,
   };
 }
 
@@ -295,6 +389,8 @@ async function huyLich(lichKhamId, soDienThoai) {
 
   return lichKham;
 }
+
+
 
 
 module.exports = {
