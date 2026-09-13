@@ -431,3 +431,199 @@ textarea {
     flex-direction: column;
   }
 }
+
+
+
+
+
+
+
+
+
+.patient-profile-card {
+  margin-top: 25px;
+  padding: 20px;
+
+  border: 1px solid #ddd;
+  border-radius: 10px;
+
+  background: #f8fafc;
+}
+
+.patient-profile-card h2 {
+  margin-top: 0;
+}
+
+.patient-profile-card p {
+  margin: 8px 0;
+}
+
+.patient-history {
+  margin-top: 30px;
+}
+
+.patient-appointment-card {
+  margin-top: 15px;
+  padding: 20px;
+
+  border: 1px solid #ddd;
+  border-radius: 10px;
+
+  background: white;
+}
+
+.patient-appointment-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+
+  align-items: flex-start;
+}
+
+.patient-appointment-header h3 {
+  margin: 0 0 6px;
+}
+
+.patient-appointment-header p {
+  margin: 0;
+  color: #666;
+}
+
+.patient-appointment-actions {
+  margin-top: 15px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.appointment-note {
+  margin-top: 15px;
+  color: #666;
+}
+
+.medical-result {
+  margin-top: 18px;
+  padding: 18px;
+
+  border: 1px solid #ddd;
+  border-radius: 8px;
+
+  background: #f8fafc;
+}
+
+.medical-result h4 {
+  margin: 0 0 10px;
+}
+
+.medical-result h4:not(:first-child) {
+  margin-top: 18px;
+}
+
+.medical-result p {
+  margin: 7px 0;
+}
+
+@media (max-width: 700px) {
+  .patient-appointment-header,
+  .patient-appointment-actions {
+    flex-direction: column;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+.admin-stat-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap: 15px;
+
+  margin: 25px 0 35px;
+}
+
+.admin-stat-card {
+  padding: 20px;
+
+  border: 1px solid #ddd;
+  border-radius: 10px;
+
+  background: #f8fafc;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-stat-card span {
+  color: #666;
+}
+
+.admin-stat-card strong {
+  font-size: 28px;
+}
+
+.admin-section {
+  margin-top: 30px;
+}
+
+.admin-appointments {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.admin-appointment {
+  display: flex;
+
+  justify-content:
+    space-between;
+
+  align-items:
+    flex-start;
+
+  gap: 20px;
+
+  padding: 20px;
+
+  border: 1px solid #ddd;
+  border-radius: 10px;
+
+  background: white;
+}
+
+.admin-appointment h3 {
+  margin: 0 0 10px;
+}
+
+.admin-appointment p {
+  margin: 6px 0;
+}
+
+@media (max-width: 800px) {
+  .admin-stat-grid {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 550px) {
+  .admin-stat-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-appointment {
+    flex-direction: column;
+  }
+}

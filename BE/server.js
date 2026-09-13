@@ -9,6 +9,7 @@ const connectDatabase = require('./src/config/database');
 const authRoutes = require('./src/routes/auth.route');
 const publicRoutes = require('./src/routes/public.route');
 const doctorRoutes = require('./src/routes/doctor.route');
+const adminRoutes = require('./src/routes/admin.route');
 
 const app = express();
 const PORT = Number(process.env.PORT) || 5000;
@@ -35,6 +36,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/public', publicRoutes);
 app.use('/api/bac-si', doctorRoutes);
+app.use('/api/admin', adminRoutes);
 
 
 // =============================

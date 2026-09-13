@@ -321,3 +321,49 @@
     overflow-x: auto;
   }
 }
+
+
+
+
+.admin-doctor-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.admin-doctor-card {
+  display: flex;
+
+  justify-content:
+    space-between;
+
+  align-items:
+    center;
+
+  gap: 20px;
+
+  padding: 20px;
+
+  background: white;
+
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+.admin-doctor-card h3 {
+  margin: 0 0 10px;
+}
+
+.admin-doctor-card p {
+  margin: 6px 0;
+}
+
+@media (max-width: 600px) {
+  .admin-doctor-card {
+    align-items:
+      flex-start;
+
+    flex-direction:
+      column;
+  }
+}
