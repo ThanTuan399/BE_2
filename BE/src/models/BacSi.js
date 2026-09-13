@@ -23,6 +23,13 @@ const bacSiSchema = new mongoose.Schema(
         trim: true,
         match: [/^0\d{9}$/, 'Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 0'],
     },
+
+    chuyenKhoaId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ChuyenKhoa',
+        default: null,
+        index: true,
+    },
   },
   {
     timestamps: true,

@@ -97,3 +97,155 @@ capNhatBacSiAdmin(
 
   return xuLyResponse(response);
 }
+
+// =============================
+// Bệnh nhân
+// =============================
+
+export async function
+layDanhSachBenhNhanAdmin() {
+  const response =
+    await fetch(
+      `${API_URL}/admin/benh-nhan`,
+      {
+        headers: {
+          Authorization:
+            `Bearer ${layToken()}`,
+        },
+      }
+    );
+
+  return xuLyResponse(response);
+}
+
+// =============================
+// Lịch làm việc
+// =============================
+
+export async function
+layLichLamViecAdmin() {
+  const response =
+    await fetch(
+      `${API_URL}/admin/lich-lam-viec`,
+      {
+        headers: {
+          Authorization:
+            `Bearer ${layToken()}`,
+        },
+      }
+    );
+
+  return xuLyResponse(response);
+}
+
+
+export async function
+themLichLamViecAdmin(payload) {
+  const response =
+    await fetch(
+      `${API_URL}/admin/lich-lam-viec`,
+      {
+        method: 'POST',
+
+        headers: {
+          'Content-Type':
+            'application/json',
+
+          Authorization:
+            `Bearer ${layToken()}`,
+        },
+
+        body:
+          JSON.stringify(payload),
+      }
+    );
+
+  return xuLyResponse(response);
+}
+
+
+export async function
+capNhatLichLamViecAdmin(
+  id,
+  payload
+) {
+  const response =
+    await fetch(
+      `${API_URL}/admin/lich-lam-viec/${id}`,
+      {
+        method: 'PATCH',
+
+        headers: {
+          'Content-Type':
+            'application/json',
+
+          Authorization:
+            `Bearer ${layToken()}`,
+        },
+
+        body:
+          JSON.stringify(payload),
+      }
+    );
+
+  return xuLyResponse(response);
+}
+
+// =============================
+// Lịch khám
+// =============================
+
+export async function
+layTatCaLichKhamAdmin() {
+  const response =
+    await fetch(
+      `${API_URL}/admin/lich-kham`,
+      {
+        headers: {
+          Authorization:
+            `Bearer ${layToken()}`,
+        },
+      }
+    );
+
+  return xuLyResponse(response);
+}
+
+
+export async function
+huyLichKhamAdmin(id) {
+  const response =
+    await fetch(
+      `${API_URL}/admin/lich-kham/${id}/huy`,
+      {
+        method: 'PATCH',
+
+        headers: {
+          Authorization:
+            `Bearer ${layToken()}`,
+        },
+      }
+    );
+
+  return xuLyResponse(response);
+}
+
+// =============================
+// Thống kê
+// =============================
+
+export async function
+layThongKeAdmin() {
+  const response =
+    await fetch(
+      `${API_URL}/admin/thong-ke`,
+      {
+        headers: {
+          Authorization:
+            `Bearer ${layToken()}`,
+        },
+      }
+    );
+
+  return xuLyResponse(response);
+}

@@ -67,5 +67,82 @@ router.patch(
   adminController.capNhatBacSi
 );
 
+// =============================
+// Lịch làm việc
+// =============================
+
+router.get(
+  '/lich-lam-viec',
+  authenticate,
+  authorize('ADMIN'),
+  adminController
+    .layDanhSachLichLamViec
+);
+
+router.post(
+  '/lich-lam-viec',
+  authenticate,
+  authorize('ADMIN'),
+  adminController
+    .themLichLamViec
+);
+
+router.patch(
+  '/lich-lam-viec/:id',
+  authenticate,
+  authorize('ADMIN'),
+  adminController
+    .capNhatLichLamViec
+);
+
+router.patch(
+  '/lich-kham/:id/huy',
+  authenticate,
+  authorize('ADMIN'),
+  adminController.huyLichKham
+);
+
+router.get(
+  '/thong-ke',
+  authenticate,
+  authorize('ADMIN'),
+  adminController.layThongKe
+);
+
+// =============================
+// Chuyên khoa
+// =============================
+
+router.get(
+  '/chuyen-khoa',
+  authenticate,
+  authorize('ADMIN'),
+  adminController
+    .layDanhSachChuyenKhoa
+);
+
+router.post(
+  '/chuyen-khoa',
+  authenticate,
+  authorize('ADMIN'),
+  adminController
+    .themChuyenKhoa
+);
+
+router.patch(
+  '/chuyen-khoa/:id',
+  authenticate,
+  authorize('ADMIN'),
+  adminController
+    .capNhatChuyenKhoa
+);
+
+router.delete(
+  '/chuyen-khoa/:id',
+  authenticate,
+  authorize('ADMIN'),
+  adminController
+    .xoaChuyenKhoa
+);
 
 module.exports = router;

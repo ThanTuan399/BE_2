@@ -4,8 +4,13 @@ import {
 } from 'react';
 
 import {
+  Link,
   useNavigate,
 } from 'react-router-dom';
+
+import {
+  layThongKeAdmin,
+} from '../api/adminApi';
 
 const API_URL =
   import.meta.env.VITE_API_URL ||
@@ -22,6 +27,10 @@ function AdminPage() {
 
   const [error, setError] =
     useState('');
+
+  // PHẢI NẰM TRONG AdminPage
+  const [thongKe, setThongKe] =
+    useState(null);
 
   const user = JSON.parse(
     localStorage.getItem('user') ||
@@ -81,6 +90,26 @@ function AdminPage() {
     loadLichKham();
   }, []);
 
+
+  useEffect(() => {
+  async function loadThongKe() {
+    try {
+      const result =
+        await layThongKeAdmin();
+
+      setThongKe(
+        result.data.tongQuan
+      );
+    } catch (error) {
+      console.error(
+        error.message
+      );
+    }
+  }
+
+  loadThongKe();
+}, []);
+
   // ==========================
   // Logout
   // ==========================
@@ -102,28 +131,17 @@ function AdminPage() {
   // ==========================
 
   const tongLich =
-    lichKham.length;
+    thongKe?.tongLichKham ?? 0;
 
   const choKham =
-    lichKham.filter(
-      (lich) =>
-        lich.trangThai ===
-        'CHO_KHAM'
-    ).length;
+    thongKe?.choKham ?? 0;
 
   const hoanThanh =
-    lichKham.filter(
-      (lich) =>
-        lich.trangThai ===
-        'HOAN_THANH'
-    ).length;
+    thongKe?.hoanThanh ?? 0;
 
   const daHuy =
-    lichKham.filter(
-      (lich) =>
-        lich.trangThai ===
-        'DA_HUY'
-    ).length;
+    thongKe?.daHuy ?? 0;
+
 
   function hienThiTrangThai(
     trangThai
@@ -184,6 +202,108 @@ function AdminPage() {
             </button>
           )}
         </div>
+
+        <section className="admin-menu">
+          <h2>Chức năng quản trị</h2>
+
+          <div className="admin-menu-grid">
+
+            <Link
+              to="/admin/bac-si"
+              className="admin-menu-card"
+            >
+              <span className="admin-menu-icon">
+                👨‍⚕️
+              </span>
+
+              <div>
+                <strong>
+                  Quản lý bác sĩ
+                </strong>
+
+                <p>
+                  Xem, thêm và sửa thông tin bác sĩ
+                </p>
+              </div>
+            </Link>
+
+            <Link
+              to="/admin/benh-nhan"
+              className="admin-menu-card"
+              >
+              <span className="admin-menu-icon">
+                  👥
+              </span>
+
+              <div>
+                <strong>
+                  Bệnh nhân
+                </strong>
+
+                <p>
+                  Xem danh sách bệnh nhân
+                </p>
+                </div>
+            </Link>
+
+            <Link
+              to="/admin/lich-kham"
+              className="admin-menu-card"
+            >
+              <span className="admin-menu-icon">
+                📅
+              </span>
+
+              <div>
+                <strong>
+                  Điều phối lịch khám
+                </strong>
+
+                <p>
+                  Tìm, lọc và hủy lịch khám
+                </p>
+              </div>
+            </Link>
+
+            <Link
+              to="/admin/lich-lam-viec"
+              className="admin-menu-card"
+            >
+              <span className="admin-menu-icon">
+                🕒
+              </span>
+
+              <div>
+                <strong>
+                  Lịch làm việc
+                </strong>
+
+                <p>
+                  Quản lý ca làm việc bác sĩ
+                </p>
+              </div>
+            </Link>
+
+            <Link
+              to="/admin/thong-ke"
+              className="admin-menu-card"
+            >
+              <span className="admin-menu-icon">
+                📊
+              </span>
+
+              <div>
+                <strong>
+                  Thống kê
+                </strong>
+
+                <p>
+                  Xem số liệu tổng quan phòng khám
+                </p>
+              </div>
+            </Link>
+          </div>
+        </section>
 
         {loading && (
           <p>

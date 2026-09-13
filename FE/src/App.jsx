@@ -3,7 +3,6 @@ import {
   Routes,
   Route,
   Link,
-  useNavigate,
 } from 'react-router-dom';
 
 
@@ -15,7 +14,10 @@ import PatientProfilePage from './pages/PatientProfilePage';
 import DoctorPage from './pages/DoctorPage';
 import AdminPage from './pages/AdminPage';
 import AdminDoctorsPage from './pages/AdminDoctorsPage';
-
+import AdminPatientsPage from './pages/AdminPatientsPage';
+import AdminSchedulesPage from './pages/AdminSchedulesPage';
+import AdminAppointmentsPage from './pages/AdminAppointmentsPage';
+import AdminStatisticsPage from './pages/AdminStatisticsPage';
 
 function App() {
   return (
@@ -64,17 +66,34 @@ function App() {
           path="/admin/bac-si"
           element={<AdminDoctorsPage />}
         />
+
+        <Route
+          path="/admin/benh-nhan"
+          element={<AdminPatientsPage />}
+        />
+
+        <Route
+          path="/admin/lich-lam-viec"
+          element={<AdminSchedulesPage />}
+        />
+
+        <Route
+          path="/admin/lich-kham"
+          element={<AdminAppointmentsPage />}
+        />
+
+        <Route
+          path="/admin/thong-ke"
+          element={
+            <AdminStatisticsPage />
+          }
+        />
       </Routes>
 
     </BrowserRouter>
   );
 }
 
-<Link
-  to="/admin/bac-si"
-  className="primary-button"
->
-  Quản lý bác sĩ
-</Link>
+
 
 export default App;
