@@ -249,3 +249,96 @@ layThongKeAdmin() {
 
   return xuLyResponse(response);
 }
+
+
+// =============================
+// Chuyên khoa
+// =============================
+
+export async function
+layDanhSachChuyenKhoaAdmin() {
+  const response =
+    await fetch(
+      `${API_URL}/admin/chuyen-khoa`,
+      {
+        headers: {
+          Authorization:
+            `Bearer ${layToken()}`,
+        },
+      }
+    );
+
+  return xuLyResponse(response);
+}
+
+
+export async function
+themChuyenKhoaAdmin(payload) {
+  const response =
+    await fetch(
+      `${API_URL}/admin/chuyen-khoa`,
+      {
+        method: 'POST',
+
+        headers: {
+          'Content-Type':
+            'application/json',
+
+          Authorization:
+            `Bearer ${layToken()}`,
+        },
+
+        body:
+          JSON.stringify(payload),
+      }
+    );
+
+  return xuLyResponse(response);
+}
+
+
+export async function
+capNhatChuyenKhoaAdmin(
+  id,
+  payload
+) {
+  const response =
+    await fetch(
+      `${API_URL}/admin/chuyen-khoa/${id}`,
+      {
+        method: 'PATCH',
+
+        headers: {
+          'Content-Type':
+            'application/json',
+
+          Authorization:
+            `Bearer ${layToken()}`,
+        },
+
+        body:
+          JSON.stringify(payload),
+      }
+    );
+
+  return xuLyResponse(response);
+}
+
+
+export async function
+xoaChuyenKhoaAdmin(id) {
+  const response =
+    await fetch(
+      `${API_URL}/admin/chuyen-khoa/${id}`,
+      {
+        method: 'DELETE',
+
+        headers: {
+          Authorization:
+            `Bearer ${layToken()}`,
+        },
+      }
+    );
+
+  return xuLyResponse(response);
+}

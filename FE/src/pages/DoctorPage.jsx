@@ -24,6 +24,9 @@ function DoctorPage() {
   const [error, setError] =
     useState('');
 
+  const [ thongTinBacSi, setThongTinBacSi] = 
+    useState(null);
+
   const [thongBao, setThongBao] =
     useState('');
 
@@ -45,6 +48,48 @@ function DoctorPage() {
     localStorage.getItem('user') ||
       'null'
   );
+
+async function loadThongTinBacSi() {
+  try {
+    const token =
+      localStorage.getItem(
+        'token'
+      );
+
+    if (!token) {
+      return;
+    }
+
+    const response =
+      await fetch(
+        `${API_URL}/bac-si/thong-tin`,
+        {
+          headers: {
+            Authorization:
+              `Bearer ${token}`,
+          },
+        }
+      );
+
+    const data =
+      await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message ||
+        'Không lấy được thông tin bác sĩ'
+      );
+    }
+
+    setThongTinBacSi(
+      data.data
+    );
+  } catch (error) {
+    console.error(
+      error.message
+    );
+  }
+}
 
   // ==========================
   // Lấy lịch khám
@@ -95,6 +140,7 @@ function DoctorPage() {
   }
 
   useEffect(() => {
+    loadThongTinBacSi();
     loadLich();
   }, []);
 
@@ -245,6 +291,30 @@ function DoctorPage() {
             <h1>
               👨‍⚕️ Trang Bác sĩ
             </h1>
+
+                {/* THÔNG TIN BÁC SĨ */}
+            {thongTinBacSi && (
+              <>
+                <p>
+                  Bác sĩ:{' '}
+                  <strong>
+                    {thongTinBacSi.hoTen}
+                  </strong>
+                </p>
+
+                <p>
+                  Chuyên khoa:{' '}
+                  <strong>
+                    {
+                      thongTinBacSi
+                        .chuyenKhoaId
+                        ?.tenChuyenKhoa ||
+                      'Chưa phân chuyên khoa'
+                    }
+                  </strong>
+                </p>
+              </>
+            )}
 
             {user && (
               <>

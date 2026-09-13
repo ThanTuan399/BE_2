@@ -62,8 +62,16 @@ function layThongTinThoiGian(date) {
 
 async function layDanhSachBacSi() {
   return BacSi.find()
-    .select('_id hoTen soDienThoai')
-    .sort({ hoTen: 1 })
+    .select(
+      '_id hoTen soDienThoai chuyenKhoaId'
+    )
+    .populate(
+      'chuyenKhoaId',
+      'tenChuyenKhoa'
+    )
+    .sort({
+      hoTen: 1,
+    })
     .lean();
 }
 
@@ -199,7 +207,17 @@ async function datLich({
   });
 
   return LichKham.findById(lichKham._id)
-    .populate('bacSiId', 'hoTen soDienThoai')
+    .populate({
+      path: 'bacSiId',
+
+      select:
+        'hoTen soDienThoai chuyenKhoaId',
+
+      populate: {
+        path: 'chuyenKhoaId',
+        select: 'tenChuyenKhoa',
+      },
+    })
     .populate('benhNhanId', 'hoTen soDienThoai')
     .lean();
 }
@@ -235,10 +253,17 @@ async function traCuuLich(soDienThoai) {
   const lichKham = await LichKham.find({
     benhNhanId: benhNhan._id,
   })
-    .populate(
-      'bacSiId',
-      'hoTen soDienThoai'
-    )
+    .populate({
+      path: 'bacSiId',
+
+      select:
+        'hoTen soDienThoai chuyenKhoaId',
+
+      populate: {
+        path: 'chuyenKhoaId',
+        select: 'tenChuyenKhoa',
+      },
+    })
     .sort({
       thoiGianBatDau: -1,
     })

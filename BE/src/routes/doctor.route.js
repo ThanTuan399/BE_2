@@ -28,4 +28,11 @@ router.post(
   doctorController.hoanThanhKham
 );
 
+router.get(
+  '/thong-tin',
+  authenticate,
+  authorize('BAC_SI'),
+  doctorController.layThongTin
+);
+
 module.exports = router;

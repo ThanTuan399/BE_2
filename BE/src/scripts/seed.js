@@ -9,6 +9,9 @@ const BacSi = require('../models/BacSi');
 const BenhNhan = require('../models/BenhNhan');
 const LichLamViec = require('../models/LichLamViec');
 const LichKham = require('../models/LichKham');
+const ChuyenKhoa = require('../models/ChuyenKhoa');
+const HoSoKham = require('../models/HoSoKham');
+const DonThuoc = require('../models/DonThuoc');
 
 async function seed() {
   try {
@@ -23,6 +26,8 @@ async function seed() {
       BenhNhan.deleteMany({}),
       BacSi.deleteMany({}),
     ]);
+
+    await ChuyenKhoa.deleteMany({});
     await NguoiDung.deleteMany({});
 
     const hashedAdminPassword = await bcrypt.hash('Admin@123', 12);
@@ -46,16 +51,32 @@ async function seed() {
       },
     ]);
 
+    const [
+      noiKhoa,
+      nhiKhoa,
+    ] = await ChuyenKhoa.create([
+      {
+        tenChuyenKhoa:
+          'Nội khoa',
+      },
+      {
+        tenChuyenKhoa:
+          'Nhi khoa',
+      },
+    ]);
+
     const [bacSi1, bacSi2] = await BacSi.create([
       {
         nguoiDungId: doctorUser1._id,
         hoTen: 'Nguyễn Minh Anh',
         soDienThoai: '0901234567',
+        chuyenKhoaId: noiKhoa._id,
       },
       {
         nguoiDungId: doctorUser2._id,
         hoTen: 'Trần Thu Hà',
         soDienThoai: '0912345678',
+        chuyenKhoaId: nhiKhoa._id,
       },
     ]);
 

@@ -11,11 +11,15 @@ import {
   layDanhSachBacSiAdmin,
   themBacSiAdmin,
   capNhatBacSiAdmin,
+  layDanhSachChuyenKhoaAdmin,
 } from '../api/adminApi';
 
 function AdminDoctorsPage() {
   const [danhSach, setDanhSach] =
     useState([]);
+
+  const [ danhSachChuyenKhoa, setDanhSachChuyenKhoa,] = 
+  useState([]);
 
   const [loading, setLoading] =
     useState(true);
@@ -33,30 +37,46 @@ function AdminDoctorsPage() {
     useState({
       hoTen: '',
       soDienThoai: '',
+      chuyenKhoaId: '',
       tenDangNhap: '',
       matKhau: '',
     });
 
 
-  async function loadBacSi() {
+    async function loadData() {
     try {
-      setLoading(true);
-      setError('');
+        setLoading(true);
+        setError('');
 
-      const result =
-        await layDanhSachBacSiAdmin();
+        const [
+        bacSiResult,
+        chuyenKhoaResult,
+        ] = await Promise.all([
+        layDanhSachBacSiAdmin(),
+        layDanhSachChuyenKhoaAdmin(),
+        ]);
 
-      setDanhSach(result.data);
+        setDanhSach(
+        bacSiResult.data
+        );
+
+        setDanhSachChuyenKhoa(
+        chuyenKhoaResult.data
+        );
     } catch (error) {
-      setError(error.message);
+        setError(error.message);
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  }
+    }
+
+    useEffect(() => {
+     loadData();
+    }, []);
 
 
   useEffect(() => {
-    loadBacSi();
+    loadData();
   }, []);
 
 
@@ -74,15 +94,16 @@ function AdminDoctorsPage() {
 
 
   function resetForm() {
-    setForm({
-      hoTen: '',
-      soDienThoai: '',
-      tenDangNhap: '',
-      matKhau: '',
-    });
+  setForm({
+    hoTen: '',
+    soDienThoai: '',
+    chuyenKhoaId: '',
+    tenDangNhap: '',
+    matKhau: '',
+  });
 
-    setBacSiDangSua(null);
-  }
+  setBacSiDangSua(null);
+}
 
 
   function batDauSua(bacSi) {
@@ -92,14 +113,17 @@ function AdminDoctorsPage() {
     setError('');
 
     setForm({
-      hoTen:
-        bacSi.hoTen,
+        hoTen:
+            bacSi.hoTen,
 
-      soDienThoai:
-        bacSi.soDienThoai,
+        soDienThoai:
+            bacSi.soDienThoai,
 
-      tenDangNhap: '',
-      matKhau: '',
+        chuyenKhoaId:
+            bacSi.chuyenKhoaId?._id || '',
+
+        tenDangNhap: '',
+        matKhau: '',
     });
 
     window.scrollTo({
@@ -121,11 +145,14 @@ function AdminDoctorsPage() {
           await capNhatBacSiAdmin(
             bacSiDangSua._id,
             {
-              hoTen:
+                hoTen:
                 form.hoTen,
 
-              soDienThoai:
+                soDienThoai:
                 form.soDienThoai,
+
+                chuyenKhoaId:
+                form.chuyenKhoaId,
             }
           );
 
@@ -136,16 +163,19 @@ function AdminDoctorsPage() {
         const result =
           await themBacSiAdmin({
             hoTen:
-              form.hoTen,
+                form.hoTen,
 
             soDienThoai:
-              form.soDienThoai,
+                form.soDienThoai,
+
+            chuyenKhoaId:
+                form.chuyenKhoaId,
 
             tenDangNhap:
-              form.tenDangNhap,
+                form.tenDangNhap,
 
             matKhau:
-              form.matKhau,
+                form.matKhau,
           });
 
         setMessage(
@@ -155,7 +185,7 @@ function AdminDoctorsPage() {
 
       resetForm();
 
-      await loadBacSi();
+      await loadData();
     } catch (error) {
       setError(error.message);
     }
@@ -217,6 +247,43 @@ function AdminDoctorsPage() {
                 placeholder="0933333333"
                 required
               />
+            </label>
+
+            <label>
+                Chuyên khoa
+
+                <select
+                    name="chuyenKhoaId"
+                    value={
+                    form.chuyenKhoaId
+                    }
+                    onChange={
+                    handleChange
+                    }
+                    required
+                >
+                    <option value="">
+                    -- Chọn chuyên khoa --
+                    </option>
+
+                    {danhSachChuyenKhoa.map(
+                    (chuyenKhoa) => (
+                        <option
+                        key={
+                            chuyenKhoa._id
+                        }
+                        value={
+                            chuyenKhoa._id
+                        }
+                        >
+                        {
+                            chuyenKhoa
+                            .tenChuyenKhoa
+                        }
+                        </option>
+                    )
+                    )}
+                </select>
             </label>
 
             {!bacSiDangSua && (
@@ -330,6 +397,20 @@ function AdminDoctorsPage() {
                           }
                         </strong>
                       </p>
+
+                      <p>
+                        Chuyên khoa:{' '}
+
+                        <strong>
+                            {
+                            bacSi
+                                .chuyenKhoaId
+                                ?.tenChuyenKhoa ||
+                            'Chưa phân chuyên khoa'
+                            }
+                        </strong>
+                      </p>
+
                     </div>
 
                     <button

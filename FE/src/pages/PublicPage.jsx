@@ -229,6 +229,19 @@ function PublicPage() {
                       <p>
                         {bacSi.soDienThoai}
                       </p>
+
+                      <p>
+                        Chuyên khoa:{' '}
+
+                        <strong>
+                          {
+                            bacSi
+                              .chuyenKhoaId
+                              ?.tenChuyenKhoa ||
+                            'Chưa phân chuyên khoa'
+                          }
+                        </strong>
+                      </p>
                     </div>
                   </div>
                 )
@@ -292,6 +305,10 @@ function PublicPage() {
                     value={bacSi._id}
                   >
                     {bacSi.hoTen}
+                    {' - '}
+                    {bacSi.chuyenKhoaId
+                      ?.tenChuyenKhoa ||
+                      'Chưa phân chuyên khoa'}
                   </option>
                 ))}
               </select>
@@ -420,6 +437,16 @@ function PublicPage() {
                             lich.bacSiId
                               ?.hoTen
                           }
+
+                          <p>
+                            Chuyên khoa:{' '}
+                            {
+                              lich.bacSiId
+                                ?.chuyenKhoaId
+                                ?.tenChuyenKhoa ||
+                              'Chưa phân chuyên khoa'
+                            }
+                          </p>
                         </strong>
 
                         <p>

@@ -277,6 +277,7 @@ async function capNhatBacSi(
   {
     hoTen,
     soDienThoai,
+    chuyenKhoaId,
   }
 ) {
   if (
@@ -310,6 +311,32 @@ async function capNhatBacSi(
     );
   }
 
+  // Kiểm tra chuyên khoa
+
+  if (
+    !mongoose.Types.ObjectId.isValid(
+      chuyenKhoaId
+    )
+  ) {
+    throw taoLoi(
+      'Chuyên khoa không hợp lệ'
+    );
+  }
+
+  const chuyenKhoa =
+    await ChuyenKhoa.findById(
+      chuyenKhoaId
+    );
+
+  if (!chuyenKhoa) {
+    throw taoLoi(
+      'Không tìm thấy chuyên khoa',
+      404
+    );
+  }
+
+  // Tìm bác sĩ
+
   const bacSi =
     await BacSi.findById(
       bacSiId
@@ -321,6 +348,8 @@ async function capNhatBacSi(
       404
     );
   }
+
+  // Kiểm tra trùng SĐT
 
   const trungSoDienThoai =
     await BacSi.findOne({
@@ -339,11 +368,16 @@ async function capNhatBacSi(
     );
   }
 
+  // Cập nhật
+
   bacSi.hoTen =
     hoTen.trim();
 
   bacSi.soDienThoai =
     soDienThoai.trim();
+
+  bacSi.chuyenKhoaId =
+    chuyenKhoaId;
 
   await bacSi.save();
 
@@ -353,6 +387,10 @@ async function capNhatBacSi(
     .populate(
       'nguoiDungId',
       'tenDangNhap vaiTro'
+    )
+    .populate(
+      'chuyenKhoaId',
+      'tenChuyenKhoa'
     )
     .lean();
 }

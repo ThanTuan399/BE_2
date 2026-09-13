@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const LichKham = require('../models/LichKham');
 const HoSoKham = require('../models/HoSoKham');
 const DonThuoc = require('../models/DonThuoc');
+const BacSi = require('../models/BacSi');
 
 function taoLoi(message, statusCode = 400) {
   const error = new Error(message);
@@ -209,7 +210,46 @@ async function hoanThanhKham(
   }
 }
 
+
+async function layThongTinBacSi(
+  bacSiId
+) {
+  if (
+    !bacSiId ||
+    !mongoose.Types.ObjectId.isValid(
+      bacSiId
+    )
+  ) {
+    throw taoLoi(
+      'ID bác sĩ không hợp lệ',
+      400
+    );
+  }
+
+  const bacSi =
+    await BacSi.findById(
+      bacSiId
+    )
+      .select(
+        '_id hoTen soDienThoai chuyenKhoaId'
+      )
+      .populate(
+        'chuyenKhoaId',
+        'tenChuyenKhoa'
+      )
+      .lean();
+
+  if (!bacSi) {
+    throw taoLoi(
+      'Không tìm thấy bác sĩ',
+      404
+    );
+  }
+
+  return bacSi;
+}
 module.exports = {
+  layThongTinBacSi,
   layLichKhamCuaBacSi,
   hoanThanhKham,
 };

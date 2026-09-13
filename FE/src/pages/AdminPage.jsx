@@ -285,6 +285,25 @@ function AdminPage() {
             </Link>
 
             <Link
+              to="/admin/chuyen-khoa"
+              className="admin-menu-card"
+            >
+              <span className="admin-menu-icon">
+                🏥
+              </span>
+
+              <div>
+                <strong>
+                  Chuyên khoa
+                </strong>
+
+                <p>
+                  Thêm, sửa và xóa chuyên khoa
+                </p>
+              </div>
+            </Link>
+
+            <Link
               to="/admin/thong-ke"
               className="admin-menu-card"
             >

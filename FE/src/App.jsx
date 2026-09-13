@@ -18,6 +18,7 @@ import AdminPatientsPage from './pages/AdminPatientsPage';
 import AdminSchedulesPage from './pages/AdminSchedulesPage';
 import AdminAppointmentsPage from './pages/AdminAppointmentsPage';
 import AdminStatisticsPage from './pages/AdminStatisticsPage';
+import AdminSpecialtiesPage from './pages/AdminSpecialtiesPage';
 
 function App() {
   return (
@@ -86,6 +87,13 @@ function App() {
           path="/admin/thong-ke"
           element={
             <AdminStatisticsPage />
+          }
+        />
+
+        <Route
+          path="/admin/chuyen-khoa"
+          element={
+            <AdminSpecialtiesPage />
           }
         />
       </Routes>

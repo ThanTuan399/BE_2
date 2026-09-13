@@ -199,6 +199,19 @@ function PatientProfilePage() {
                               lich.bacSiId
                                 ?.hoTen
                             }
+
+                            <p>
+                              Chuyên khoa:{' '}
+
+                              <strong>
+                                {
+                                  lich.bacSiId
+                                    ?.chuyenKhoaId
+                                    ?.tenChuyenKhoa ||
+                                  'Chưa phân chuyên khoa'
+                                }
+                              </strong>
+                            </p>
                           </h3>
 
                           <p>

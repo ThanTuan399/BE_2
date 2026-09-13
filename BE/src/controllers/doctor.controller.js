@@ -48,7 +48,30 @@ async function hoanThanhKham(
   }
 }
 
+async function layThongTin(
+  req,
+  res,
+  next
+) {
+  try {
+    const data =
+      await doctorService
+        .layThongTinBacSi(
+          req.user.bacSiId
+        );
+
+    return res.status(200).json({
+      success: true,
+      message:
+        'Lấy thông tin bác sĩ thành công',
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
 module.exports = {
+  layThongTin,
   layLichKham,
   hoanThanhKham,
 };
