@@ -1,12 +1,8 @@
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Link,
-} from 'react-router-dom';
-
-
-
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import './App.css';
+import './clinic.css';
+import AppShell from './components/AppShell';
+import ProtectedRoute from './components/ProtectedRoute';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import PublicPage from './pages/PublicPage';
@@ -20,88 +16,31 @@ import AdminAppointmentsPage from './pages/AdminAppointmentsPage';
 import AdminStatisticsPage from './pages/AdminStatisticsPage';
 import AdminSpecialtiesPage from './pages/AdminSpecialtiesPage';
 
+function BaoVe({ role, children }) {
+  return <ProtectedRoute role={role}>{children}</ProtectedRoute>;
+}
+
 function App() {
   return (
     <BrowserRouter>
-      <nav className="main-nav">
-        <Link to="/">Trang chủ</Link>
-        <Link to="/public">Bệnh nhân</Link>
-        <Link to="/login">Đăng nhập</Link>
-        <Link to="/bac-si">Bác sĩ</Link>
-        <Link to="/admin">Admin</Link>
-        <Link to="/ho-so-benh-nhan">Hồ sơ bệnh nhân</Link>
-      </nav>
-
       <Routes>
-        <Route
-          path="/"
-          element={<HomePage />}
-        />
-
-        <Route
-          path="/public"
-          element={<PublicPage />}
-        />
-
-        <Route
-          path="/login"
-          element={<LoginPage />}
-        />
-
-        <Route
-          path="/bac-si"
-          element={<DoctorPage />}
-        />
-
-        <Route
-          path="/admin"
-          element={<AdminPage />}
-        />
-
-        <Route
-          path="/ho-so-benh-nhan"
-          element={<PatientProfilePage />}
-        />
-
-        <Route
-          path="/admin/bac-si"
-          element={<AdminDoctorsPage />}
-        />
-
-        <Route
-          path="/admin/benh-nhan"
-          element={<AdminPatientsPage />}
-        />
-
-        <Route
-          path="/admin/lich-lam-viec"
-          element={<AdminSchedulesPage />}
-        />
-
-        <Route
-          path="/admin/lich-kham"
-          element={<AdminAppointmentsPage />}
-        />
-
-        <Route
-          path="/admin/thong-ke"
-          element={
-            <AdminStatisticsPage />
-          }
-        />
-
-        <Route
-          path="/admin/chuyen-khoa"
-          element={
-            <AdminSpecialtiesPage />
-          }
-        />
+        <Route element={<AppShell />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/public" element={<PublicPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/ho-so-benh-nhan" element={<PatientProfilePage />} />
+          <Route path="/bac-si" element={<BaoVe role="BAC_SI"><DoctorPage /></BaoVe>} />
+          <Route path="/admin" element={<BaoVe role="ADMIN"><AdminPage /></BaoVe>} />
+          <Route path="/admin/bac-si" element={<BaoVe role="ADMIN"><AdminDoctorsPage /></BaoVe>} />
+          <Route path="/admin/benh-nhan" element={<BaoVe role="ADMIN"><AdminPatientsPage /></BaoVe>} />
+          <Route path="/admin/lich-lam-viec" element={<BaoVe role="ADMIN"><AdminSchedulesPage /></BaoVe>} />
+          <Route path="/admin/lich-kham" element={<BaoVe role="ADMIN"><AdminAppointmentsPage /></BaoVe>} />
+          <Route path="/admin/thong-ke" element={<BaoVe role="ADMIN"><AdminStatisticsPage /></BaoVe>} />
+          <Route path="/admin/chuyen-khoa" element={<BaoVe role="ADMIN"><AdminSpecialtiesPage /></BaoVe>} />
+        </Route>
       </Routes>
-
     </BrowserRouter>
   );
 }
-
-
 
 export default App;
