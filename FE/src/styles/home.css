@@ -1,0 +1,10 @@
+.home-view { padding-top: 40px; }
+.home-box { max-width: 760px; margin: 0 auto; padding: 28px; }
+.home-box h1 { margin: 0 0 10px; font-size: 28px; color: #111827; }
+.home-box p { margin: 0; color: #5b6472; }
+.home-actions { display: flex; gap: 12px; margin-top: 22px; }
+
+@media (max-width: 640px) {
+  .home-actions { flex-direction: column; }
+  .primary-link-button, .secondary-link-button { justify-content: center; }
+}
