@@ -38,13 +38,33 @@ const lichKhamSchema = new mongoose.Schema(
 );
 
 lichKhamSchema.pre('validate', function validateAppointmentTime(next) {
-  if (
-    this.thoiGianBatDau &&
-    this.thoiGianKetThuc &&
-    this.thoiGianBatDau >= this.thoiGianKetThuc
-  ) {
+  if (this.thoiGianBatDau && this.thoiGianKetThuc && this.thoiGianBatDau >= this.thoiGianKetThuc) {
     return next(new Error('thoiGianBatDau phải nhỏ hơn thoiGianKetThuc'));
   }
+
+  next();
+});
+
+// Khóa các chuyển trạng thái không hợp lệ theo thời gian thực tế.
+lichKhamSchema.pre('save', function validateStatusTransition(next) {
+  if (this.isNew || !this.isModified('trangThai')) {
+    return next();
+  }
+
+  const hienTai = new Date();
+
+  if (this.trangThai === 'HOAN_THANH' && this.thoiGianBatDau > hienTai) {
+    const error = new Error('Chưa đến thời gian khám nên không thể hoàn thành lịch');
+    error.statusCode = 409;
+    return next(error);
+  }
+
+  if (this.trangThai === 'DA_HUY' && this.thoiGianBatDau <= hienTai) {
+    const error = new Error('Không thể hủy lịch đã đến hoặc qua thời gian khám');
+    error.statusCode = 409;
+    return next(error);
+  }
+
   next();
 });
 
