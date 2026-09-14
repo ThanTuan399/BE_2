@@ -16,19 +16,24 @@ const DonThuoc = require('../models/DonThuoc');
 async function seed() {
   try {
     await connectDatabase();
+    
+      // về bảng gốc.
+      await DonThuoc.deleteMany({});
 
-    // Xóa theo thứ tự từ bảng phụ thuộc về bảng gốc.
-    await Promise.all([
-      LichKham.deleteMany({}),
-      LichLamViec.deleteMany({}),
-    ]);
-    await Promise.all([
-      BenhNhan.deleteMany({}),
-      BacSi.deleteMany({}),
-    ]);
+      await HoSoKham.deleteMany({});
 
-    await ChuyenKhoa.deleteMany({});
-    await NguoiDung.deleteMany({});
+      await Promise.all([
+        LichKham.deleteMany({}),
+        LichLamViec.deleteMany({}),
+      ]);
+
+      await Promise.all([
+        BenhNhan.deleteMany({}),
+        BacSi.deleteMany({}),
+      ]);
+
+      await ChuyenKhoa.deleteMany({});
+      await NguoiDung.deleteMany({});
 
     const hashedAdminPassword = await bcrypt.hash('Admin@123', 12);
     const hashedDoctorPassword = await bcrypt.hash('Doctor@123', 12);

@@ -2,17 +2,23 @@ import { useEffect, useState } from 'react';
 
 import {
   layDanhSachBacSi,
+  layLichTrongBacSi,
   datLich,
   traCuuLich,
   huyLich,
 } from '../api/publicApi';
 
 function PublicPage() {
+  
   const [danhSachBacSi, setDanhSachBacSi] =
     useState([]);
 
   const [loadingBacSi, setLoadingBacSi] =
     useState(true);
+
+  const [lichTrong, setLichTrong] = useState([]);
+  const [loadingLichTrong, setLoadingLichTrong] = useState(false);
+  const [errorLichTrong, setErrorLichTrong] = useState('');
 
   const [form, setForm] = useState({
     hoTen: '',
@@ -66,6 +72,31 @@ function PublicPage() {
     loadBacSi();
   }, []);
 
+  async function loadLichTrong(bacSiId) {
+    if (!bacSiId) {
+      setLichTrong([]);
+      return;
+    }
+
+    try {
+      setLoadingLichTrong(true);
+      setErrorLichTrong('');
+
+      const result = await layLichTrongBacSi(bacSiId);
+      setLichTrong(result.data);
+    } catch (error) {
+      setLichTrong([]);
+      setErrorLichTrong(error.message);
+    } finally {
+      setLoadingLichTrong(false);
+    }
+  }
+
+  useEffect(() => {
+    if (form.bacSiId) {
+      loadLichTrong(form.bacSiId);
+    }
+  }, [form.bacSiId]);
 
   // ==========================
   // Form
@@ -74,12 +105,52 @@ function PublicPage() {
   function handleChange(e) {
     const { name, value } = e.target;
 
+    if (name === 'bacSiId') {
+      setForm((prev) => ({
+        ...prev,
+        bacSiId: value,
+        ngayKham: '',
+        gioBatDau: '',
+      }));
+
+      return;
+    }
+
     setForm((prev) => ({
       ...prev,
       [name]: value,
     }));
   }
 
+
+  function chonKhungGio(ngay, gio) {
+    setForm((prev) => ({
+      ...prev,
+      ngayKham: ngay,
+      gioBatDau: gio,
+    }));
+
+    setThongBaoDatLich(null);
+  }
+
+  function hienThiThu(thu) {
+    const tenThu = {
+      1: 'Thứ 2',
+      2: 'Thứ 3',
+      3: 'Thứ 4',
+      4: 'Thứ 5',
+      5: 'Thứ 6',
+      6: 'Thứ 7',
+      7: 'Chủ nhật',
+    };
+
+    return tenThu[thu] || '';
+  }
+
+  function dinhDangNgay(ngay) {
+    const [nam, thang, ngayTrongThang] = ngay.split('-');
+    return `${ngayTrongThang}/${thang}/${nam}`;
+  }
 
   // ==========================
   // Đặt lịch
@@ -103,6 +174,8 @@ function PublicPage() {
       };
       
       const result = await datLich(payload);
+
+      await loadLichTrong(form.bacSiId);
 
       setThongBaoDatLich({
         type: 'success',
@@ -314,30 +387,67 @@ function PublicPage() {
               </select>
             </label>
 
+            <section className="available-schedule">
+              <h3>🗓️ Lịch trống trong 7 ngày tới</h3>
+
+              {loadingLichTrong && <p>Đang tải lịch trống...</p>}
+
+              {errorLichTrong && (
+                <div className="message error">
+                  {errorLichTrong}
+                </div>
+              )}
+
+              {!loadingLichTrong && !errorLichTrong && (
+                <div className="available-days">
+                  {lichTrong.map((ngay) => (
+                    <div className="available-day" key={ngay.ngay}>
+                      <h4>
+                        {hienThiThu(ngay.thuTrongTuan)} - {dinhDangNgay(ngay.ngay)}
+                      </h4>
+
+                      {!ngay.coLichLamViec ? (
+                        <p>Bác sĩ không làm việc.</p>
+                      ) : ngay.khungGio.length === 0 ? (
+                        <p>Không còn giờ trống.</p>
+                      ) : (
+                        <div className="available-slots">
+                          {ngay.khungGio.map((gio) => (
+                            <button
+                              type="button"
+                              key={`${ngay.ngay}-${gio}`}
+                              className={
+                                form.ngayKham === ngay.ngay && form.gioBatDau === gio
+                                  ? 'time-slot selected'
+                                  : 'time-slot'
+                              }
+                              onClick={() => chonKhungGio(ngay.ngay, gio)}
+                            >
+                              {gio}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
+
             {/* NGÀY + GIỜ */}
             <div className="form-grid">
               <label>
                 Ngày khám
 
-                <input
-                  type="date"
-                  name="ngayKham"
-                  value={form.ngayKham}
-                  onChange={handleChange}
-                  required
-                />
+                <input type="date" name="ngayKham" value={form.ngayKham} readOnly required />
+
               </label>
 
               <label>
                 Giờ khám
 
-                <input
-                  type="time"
-                  name="gioBatDau"
-                  value={form.gioBatDau}
-                  onChange={handleChange}
-                  required
-                />
+                <input type="time" name="gioBatDau" value={form.gioBatDau} readOnly required />
+
               </label>
             </div>
 

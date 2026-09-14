@@ -20,6 +20,20 @@ async function layDanhSachBacSi(req, res, next) {
   }
 }
 
+// Lịch trống 7 ngày tới
+async function layLichTrong(req, res, next) {
+  try {
+    const data = await publicService.layLichTrong7Ngay(req.params.bacSiId);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Lấy lịch trống của bác sĩ thành công',
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
 
 // Đặt lịch
 async function datLich(req, res, next) {
@@ -80,6 +94,7 @@ async function huyLich(req, res, next) {
 
 module.exports = {
   layDanhSachBacSi,
+  layLichTrong,
   datLich,
   traCuuLich,
   huyLich,

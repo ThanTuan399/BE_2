@@ -13,6 +13,7 @@ router.get(
   publicController.layDanhSachBacSi
 );
 
+router.get('/lich-trong/:bacSiId', publicController.layLichTrong);
 
 // Đặt lịch
 router.post(

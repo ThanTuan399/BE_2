@@ -55,6 +55,135 @@ function layThongTinThoiGian(date) {
   };
 }
 
+// ========================================
+// Helper lịch trống
+// ========================================
+
+function congNgay(
+  ngay,
+  soNgay
+) {
+  const [
+    nam,
+    thang,
+    ngayTrongThang,
+  ] = ngay
+    .split('-')
+    .map(Number);
+
+  const date =
+    new Date(
+      Date.UTC(
+        nam,
+        thang - 1,
+        ngayTrongThang +
+          soNgay
+      )
+    );
+
+  return date
+    .toISOString()
+    .slice(0, 10);
+}
+
+
+function layThuTrongTuanTuNgay(
+  ngay
+) {
+  const [
+    nam,
+    thang,
+    ngayTrongThang,
+  ] = ngay
+    .split('-')
+    .map(Number);
+
+  const date =
+    new Date(
+      Date.UTC(
+        nam,
+        thang - 1,
+        ngayTrongThang
+      )
+    );
+
+  const thuJS =
+    date.getUTCDay();
+
+  // JavaScript:
+  // 0 = Chủ nhật
+  // 1 = Thứ 2
+  // ...
+  // Model:
+  // 1 = Thứ 2
+  // ...
+  // 7 = Chủ nhật
+
+  return thuJS === 0
+    ? 7
+    : thuJS;
+}
+
+
+function gioSangPhut(gio) {
+  const [
+    gioSo,
+    phutSo,
+  ] = gio
+    .split(':')
+    .map(Number);
+
+  return (
+    gioSo * 60 +
+    phutSo
+  );
+}
+
+
+function phutSangGio(
+  tongPhut
+) {
+  const gio =
+    Math.floor(
+      tongPhut / 60
+    );
+
+  const phut =
+    tongPhut % 60;
+
+  return (
+    String(gio).padStart(
+      2,
+      '0'
+    ) +
+    ':' +
+    String(phut).padStart(
+      2,
+      '0'
+    )
+  );
+}
+
+
+function taoThoiGianVietNam(
+  ngay,
+  gio
+) {
+  return new Date(
+    `${ngay}T${gio}:00+07:00`
+  );
+}
+
+
+const TEN_THU = {
+  1: 'Thứ 2',
+  2: 'Thứ 3',
+  3: 'Thứ 4',
+  4: 'Thứ 5',
+  5: 'Thứ 6',
+  6: 'Thứ 7',
+  7: 'Chủ nhật',
+};
 
 // ========================================
 // Danh sách bác sĩ
@@ -75,6 +204,100 @@ async function layDanhSachBacSi() {
     .lean();
 }
 
+// ========================================
+// Lịch trống của bác sĩ trong 7 ngày tới
+// ========================================
+
+async function layLichTrong7Ngay(bacSiId) {
+  if (!mongoose.Types.ObjectId.isValid(bacSiId)) {
+    throw taoLoi('ID bác sĩ không hợp lệ');
+  }
+
+  const bacSi = await BacSi.findById(bacSiId).lean();
+
+  if (!bacSi) {
+    throw taoLoi('Không tìm thấy bác sĩ', 404);
+  }
+
+  const hienTai = new Date();
+  const ngayHomNay = layThongTinThoiGian(hienTai).ngay;
+
+  // Việt Nam UTC+7
+  const batDauKhoang = new Date(`${ngayHomNay}T00:00:00+07:00`);
+  const ketThucKhoang = new Date(batDauKhoang.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+  const [lichLamViec, lichDaDat] = await Promise.all([
+    LichLamViec.find({
+      bacSiId,
+      dangHoatDong: true,
+    }).sort({
+      thuTrongTuan: 1,
+      gioBatDau: 1,
+    }).lean(),
+
+    LichKham.find({
+      bacSiId,
+      trangThai: { $ne: 'DA_HUY' },
+      thoiGianBatDau: { $lt: ketThucKhoang },
+      thoiGianKetThuc: { $gt: batDauKhoang },
+    }).select('thoiGianBatDau thoiGianKetThuc').lean(),
+  ]);
+
+  const ketQua = [];
+
+  for (let i = 0; i < 7; i++) {
+    const ngayDate = new Date(batDauKhoang.getTime() + i * 24 * 60 * 60 * 1000);
+    const thongTinNgay = layThongTinThoiGian(ngayDate);
+
+    const caTrongNgay = lichLamViec.filter(
+      (ca) => ca.thuTrongTuan === thongTinNgay.thuTrongTuan
+    );
+
+    const khungGio = [];
+
+    for (const ca of caTrongNgay) {
+      const [gioBatDau, phutBatDau] = ca.gioBatDau.split(':').map(Number);
+      const [gioKetThuc, phutKetThuc] = ca.gioKetThuc.split(':').map(Number);
+
+      const batDauPhut = gioBatDau * 60 + phutBatDau;
+      const ketThucPhut = gioKetThuc * 60 + phutKetThuc;
+
+      for (let phut = batDauPhut; phut + 30 <= ketThucPhut; phut += 30) {
+        const gio = Math.floor(phut / 60);
+        const phutTrongGio = phut % 60;
+
+        const gioChuoi = `${String(gio).padStart(2, '0')}:${String(phutTrongGio).padStart(2, '0')}`;
+        const batDauSlot = new Date(`${thongTinNgay.ngay}T${gioChuoi}:00+07:00`);
+        const ketThucSlot = new Date(batDauSlot.getTime() + 30 * 60 * 1000);
+
+        // Không hiện giờ đã qua
+        if (batDauSlot <= hienTai) {
+          continue;
+        }
+
+        const biTrung = lichDaDat.some((lich) => {
+          const batDauDaDat = new Date(lich.thoiGianBatDau);
+          const ketThucDaDat = new Date(lich.thoiGianKetThuc);
+
+          return batDauDaDat < ketThucSlot && ketThucDaDat > batDauSlot;
+        });
+
+        if (!biTrung) {
+          khungGio.push(gioChuoi);
+        }
+      }
+    }
+
+    ketQua.push({
+      ngay: thongTinNgay.ngay,
+      thuTrongTuan: thongTinNgay.thuTrongTuan,
+      coLichLamViec: caTrongNgay.length > 0,
+      khungGio: [...new Set(khungGio)].sort(),
+    });
+  }
+
+  return ketQua;
+}
 
 // ========================================
 // Đặt lịch khám
@@ -420,6 +643,7 @@ async function huyLich(lichKhamId, soDienThoai) {
 
 module.exports = {
   layDanhSachBacSi,
+  layLichTrong7Ngay,
   datLich,
   traCuuLich,
   huyLich,

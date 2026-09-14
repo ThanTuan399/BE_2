@@ -22,6 +22,11 @@ export async function layDanhSachBacSi() {
   return xuLyResponse(response);
 }
 
+export async function layLichTrongBacSi(bacSiId) {
+  const response = await fetch(`${API_URL}/public/lich-trong/${bacSiId}`);
+  return xuLyResponse(response);
+}
+
 export async function datLich(payload) {
   const response = await fetch(
     `${API_URL}/public/dat-lich`,
