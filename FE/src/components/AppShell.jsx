@@ -25,7 +25,7 @@ function AppShell() {
       <header className="app-header">
         <div className="app-header-inner">
           <NavLink to="/" className="app-brand">
-            <span className="app-brand-icon">✚</span>
+            <span className="app-brand-icon">+</span>
             <span>
               <strong>Phòng khám</strong>
               <small>Quản lý lịch khám</small>
@@ -43,13 +43,7 @@ function AppShell() {
           <div className="app-header-actions">
             {user ? (
               <>
-                <div className="user-chip">
-                  <span className="user-chip-avatar">{user.vaiTro === 'ADMIN' ? 'A' : 'BS'}</span>
-                  <span>
-                    <strong>{user.tenDangNhap}</strong>
-                    <small>{user.vaiTro === 'ADMIN' ? 'Quản trị viên' : 'Bác sĩ'}</small>
-                  </span>
-                </div>
+                <span className="header-user-name">{user.tenDangNhap}</span>
                 <button type="button" className="ghost-button" onClick={logout}>Đăng xuất</button>
               </>
             ) : (
@@ -64,10 +58,7 @@ function AppShell() {
       </div>
 
       <footer className="app-footer">
-        <div>
-          <strong>Hệ thống quản lý phòng khám</strong>
-          <span>Đặt lịch · Hồ sơ khám · Kê đơn · Quản trị</span>
-        </div>
+        <div>Hệ thống quản lý phòng khám</div>
       </footer>
     </div>
   );
