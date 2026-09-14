@@ -1,0 +1,6 @@
+.login-page { width: min(520px, calc(100% - 32px)); margin: 40px auto; }
+.login-card { padding: 28px; }
+.login-card h1 { margin: 0 0 22px; font-size: 26px; color: #111827; }
+.login-form { display: flex; flex-direction: column; gap: 16px; }
+.login-form label { display: flex; flex-direction: column; gap: 7px; font-weight: 600; color: #111827; }
+.login-form .primary-button { margin-top: 4px; }
