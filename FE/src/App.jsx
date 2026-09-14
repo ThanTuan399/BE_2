@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import './App.css';
 import AppShell from './components/AppShell';
 import ProtectedRoute from './components/ProtectedRoute';
 import HomePage from './pages/HomePage';
@@ -27,7 +28,6 @@ function App() {
           <Route path="/public" element={<PublicPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/ho-so-benh-nhan" element={<PatientProfilePage />} />
-
           <Route path="/bac-si" element={<BaoVe role="BAC_SI"><DoctorPage /></BaoVe>} />
           <Route path="/admin" element={<BaoVe role="ADMIN"><AdminPage /></BaoVe>} />
           <Route path="/admin/bac-si" element={<BaoVe role="ADMIN"><AdminDoctorsPage /></BaoVe>} />
