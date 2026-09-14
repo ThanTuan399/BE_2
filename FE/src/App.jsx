@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
+import './clinic.css';
 import AppShell from './components/AppShell';
 import ProtectedRoute from './components/ProtectedRoute';
 import HomePage from './pages/HomePage';
