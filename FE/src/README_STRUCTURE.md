@@ -36,6 +36,15 @@ src/
 - Trang nối logic với giao diện: `pages/PublicPage.jsx`
 - CSS: `styles/booking.css`
 
+## Admin - quản lý bác sĩ
+
+- Giao diện: `views/AdminDoctorsView.jsx`
+- Logic thêm, sửa, xóa và tải dữ liệu: `hooks/useAdminDoctors.js`
+- API riêng: `api/adminDoctorsApi.js`
+- Trang nối logic với giao diện: `pages/AdminDoctorsPage.jsx`
+- CSS: `styles/admin-doctors.css`
+- Xóa bác sĩ chỉ được phép khi bác sĩ chưa có lịch khám. Khi xóa thành công, Backend xóa hồ sơ bác sĩ, tài khoản đăng nhập và các ca làm việc của bác sĩ đó.
+
 ## Thành phần dùng chung
 
 - Khung ứng dụng: `components/AppShell.jsx`
